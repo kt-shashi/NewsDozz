@@ -1,19 +1,11 @@
 package com.shashi.newsdozz
 
-import android.graphics.drawable.Drawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
-import kotlin.math.log
 
 class HomeActivity : AppCompatActivity() {
 
@@ -38,7 +30,7 @@ class HomeActivity : AppCompatActivity() {
 
                 // Get url of image
                 var articleResponse = response.getJSONArray("articles")
-                var artcleNews = ArrayList<NewsData>()
+                var articleNews = ArrayList<NewsData>()
 
                 for (i in 0 until articleResponse.length()) {
 
@@ -51,9 +43,11 @@ class HomeActivity : AppCompatActivity() {
                         newsJsonObject.getString("url")
                     )
 
-                    Log.d(Constants.TAG, "loadNews: ${news.title}")
+                    articleNews.add(news)
 
                 }
+
+                updateUI(articleNews)
 
 
             },
@@ -63,6 +57,15 @@ class HomeActivity : AppCompatActivity() {
         )
 
         VolleySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
+
+    }
+
+    private fun updateUI(articleNews: ArrayList<NewsData>) {
+
+        var newsAdapter = NewsAdapter(this, articleNews)
+
+        binding.rvNewsAM.layoutManager = LinearLayoutManager(this)
+        binding.rvNewsAM.adapter = newsAdapter
 
     }
 
