@@ -1,6 +1,7 @@
 package com.shashi.newsdozz
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
@@ -29,6 +30,9 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun loadNews() {
+
+        binding.progressBarAM.visibility = View.VISIBLE
+
         val url = Constants.NEWS_API
 
         val jsonObjectRequest = JsonObjectRequest(
@@ -55,7 +59,7 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 updateUI(articleNews)
-
+                binding.progressBarAM.visibility = View.GONE
 
             },
             { error ->
