@@ -14,6 +14,13 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Hide title bar
+        try {
+            this.supportActionBar!!.hide()
+        } catch (e: NullPointerException) {
+
+        }
+
         // Data binding
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
