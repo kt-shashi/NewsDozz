@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import org.w3c.dom.Text
 
 class NewsAdapter(var context: Context, var newsList: ArrayList<NewsData>) :
@@ -25,6 +26,13 @@ class NewsAdapter(var context: Context, var newsList: ArrayList<NewsData>) :
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
 
         holder.tvNewsTitle.text = newsList.get(position).title
+        holder.tvNewsDesc.text = newsList.get(position).desc
+
+        Glide
+            .with(context)
+            .load(newsList.get(position).imageUrl)
+            .placeholder(R.drawable.icon_placeholder)
+            .into(holder.ivNewsImage)
 
     }
 
