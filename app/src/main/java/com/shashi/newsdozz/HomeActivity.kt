@@ -1,16 +1,21 @@
 package com.shashi.newsdozz
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
 
-class HomeActivity : AppCompatActivity() {
+
+class HomeActivity : AppCompatActivity(), NewsItemClicked {
 
     private lateinit var binding: ActivityHomeBinding
+    private var newsAdapter = NewsAdapter(this, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +63,8 @@ class HomeActivity : AppCompatActivity() {
 
                 }
 
-                updateUI(articleNews)
+                newsAdapter.updateNewsList(articleNews)
+                updateUI()
                 binding.progressBarAM.visibility = View.GONE
 
             },
@@ -71,12 +77,19 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    private fun updateUI(articleNews: ArrayList<NewsData>) {
-
-        var newsAdapter = NewsAdapter(this, articleNews)
+    private fun updateUI() {
 
         binding.rvNewsAM.layoutManager = LinearLayoutManager(this)
         binding.rvNewsAM.adapter = newsAdapter
+
+    }
+
+    override fun onItemClicked(item: NewsData) {
+
+        val url = item.newsUrl
+        val builder = CustomTabsIntent.Builder()
+        val customTabsIntent = builder.build()
+        customTabsIntent.launchUrl(this, Uri.parse(url))
 
     }
 
