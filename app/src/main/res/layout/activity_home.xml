@@ -23,6 +23,127 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <HorizontalScrollView
+
+            android:id="@+id/hscrollViewAM"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeadingAM">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnBreakingNews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/category_button_design"
+                    android:fontFamily="@font/montserrat"
+                    android:minHeight="30dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/breaking_news"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    app:backgroundTintMode="add"
+                    tools:ignore="ButtonStyle" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnBusiness"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/category_button_design"
+                    android:fontFamily="@font/montserrat"
+                    android:minHeight="30dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/business"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    app:backgroundTintMode="add"
+                    tools:ignore="ButtonStyle" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnTechnology"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/category_button_design"
+                    android:fontFamily="@font/montserrat"
+                    android:minHeight="30dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/technology"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    app:backgroundTintMode="add"
+                    tools:ignore="ButtonStyle" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnSports"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/category_button_design"
+                    android:fontFamily="@font/montserrat"
+                    android:minHeight="30dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/sports"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    app:backgroundTintMode="add"
+                    tools:ignore="ButtonStyle" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnScience"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/category_button_design"
+                    android:fontFamily="@font/montserrat"
+                    android:minHeight="30dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/science"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    app:backgroundTintMode="add"
+                    tools:ignore="ButtonStyle" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnHealth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="3dp"
+                    android:background="@drawable/category_button_design"
+                    android:fontFamily="@font/montserrat"
+                    android:minHeight="30dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/health"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    app:backgroundTintMode="add"
+                    tools:ignore="ButtonStyle" />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/swipeRefreshAM"
             android:layout_width="0dp"
@@ -30,14 +151,14 @@
             app:layout_constraintBottom_toTopOf="@id/progressBarAM"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvHeadingAM">
+            app:layout_constraintTop_toBottomOf="@+id/hscrollViewAM">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvNewsAM"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="15dp" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -46,6 +167,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:indeterminate="true"
             android:progressDrawable="@drawable/progress_bar_background"
             app:layout_constraintBottom_toBottomOf="parent"
