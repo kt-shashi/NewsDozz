@@ -31,6 +31,12 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.swipeRefreshAM.setOnRefreshListener {
+            loadNews()
+            binding.swipeRefreshAM.isRefreshing = false
+        }
+
+        // Load News by default for the first time app opens
         loadNews()
     }
 
