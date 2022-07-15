@@ -122,7 +122,12 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
             "mr" -> {
                 radioGroup.check(R.id.rbMarathi)
             }
-
+            "ta" -> {
+                radioGroup.check(R.id.rbTamil)
+            }
+            "te" -> {
+                radioGroup.check(R.id.rbTelugu)
+            }
         }
 
         radioGroup.setOnCheckedChangeListener { radioGroup, id ->
@@ -136,6 +141,12 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
                 }
                 R.id.rbMarathi -> {
                     lang = "mr"
+                }
+                R.id.rbTamil -> {
+                    lang = "ta"
+                }
+                R.id.rbTelugu -> {
+                    lang = "te"
                 }
             }
 

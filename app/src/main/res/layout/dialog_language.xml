@@ -60,6 +60,26 @@
             android:text="Marathi"
             android:textColor="@color/grey" />
 
+        <RadioButton
+            android:id="@+id/rbTamil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/yellow_custom"
+            android:padding="4dp"
+            android:tag="ta"
+            android:text="Tamil"
+            android:textColor="@color/grey" />
+
+        <RadioButton
+            android:id="@+id/rbTelugu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/yellow_custom"
+            android:padding="4dp"
+            android:tag="te"
+            android:text="Telugu"
+            android:textColor="@color/grey" />
+
     </RadioGroup>
 
     <LinearLayout
