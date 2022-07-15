@@ -9,6 +9,9 @@ class Constants {
 
         const val TAG = "newsdozz"
 
+        const val LANGUAGE_PREF = "language_pref"
+        const val LANGUAGE = "language"
+
     }
 
 }

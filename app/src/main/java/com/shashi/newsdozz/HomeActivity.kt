@@ -1,10 +1,14 @@
 package com.shashi.newsdozz
 
+import android.app.Dialog
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.Window
 import android.widget.Button
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
@@ -17,10 +21,14 @@ import com.shashi.newsdozz.databinding.ActivityHomeBinding
 class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener {
 
     private lateinit var binding: ActivityHomeBinding
-    private var newsAdapter = NewsAdapter(this, this)
 
+    private var newsAdapter = NewsAdapter(this, this)
     private var newsUrl: String = Constants.NEWS_API
     private var buttonCategory = ArrayList<Button>()
+    private lateinit var newsCategory: String
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var lang: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +72,87 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
             i.setOnClickListener(this)
 
         // By default Breaking news is selected
+        newsCategory = "breaking-news"
         binding.btnBreakingNews.setBackgroundResource(R.drawable.category_button_selected_design)
         binding.btnBreakingNews.setTextColor(Color.parseColor("#000000"))
+
+        sharedPreferences = getSharedPreferences(Constants.LANGUAGE_PREF, MODE_PRIVATE)
+        getLanguage()
+        newsUrl =
+            "https://gnews.io/api/v4/top-headlines?lang=$lang&country=in&topic=$newsCategory&token=ef098601144aaa99d14f8cd6d85eb7d8"
+
+        binding.ivLanguage.setOnClickListener {
+            changeLanguage()
+        }
+    }
+
+    // Get language from Shared pref
+    private fun getLanguage() {
+        lang = sharedPreferences.getString(Constants.LANGUAGE, "en").toString()
+    }
+
+    // Save language into Shared pref
+    private fun setLanguage(lang: String) {
+        with(sharedPreferences.edit()) {
+            putString(Constants.LANGUAGE, lang)
+            apply()
+        }
+
+        onClick(binding.btnBreakingNews)
+    }
+
+    // Change language
+    private fun changeLanguage() {
+        getLanguage()
+
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.dialog_language)
+
+        val radioGroup = dialog.findViewById<RadioGroup>(R.id.radioGroupLanguage)
+
+        when (lang) {
+            "en" -> {
+                radioGroup.check(R.id.rbEnglish)
+            }
+            "hi" -> {
+                radioGroup.check(R.id.rbHindi)
+            }
+            "mr" -> {
+                radioGroup.check(R.id.rbMarathi)
+            }
+
+        }
+
+        radioGroup.setOnCheckedChangeListener { radioGroup, id ->
+
+            when (id) {
+                R.id.rbEnglish -> {
+                    lang = "en"
+                }
+                R.id.rbHindi -> {
+                    lang = "hi"
+                }
+                R.id.rbMarathi -> {
+                    lang = "mr"
+                }
+            }
+
+        }
+
+        var btnSave = dialog.findViewById<Button>(R.id.btnSaveLanguage)
+        var btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
+
+        btnSave.setOnClickListener {
+            setLanguage(lang)
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     // Handle Category button click
@@ -92,10 +179,10 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         buttonCategory[position].setTextColor(Color.parseColor("#000000"))
         buttonCategory[position].isClickable = false
 
-        val newsCategory = buttonCategory[position].text
+        newsCategory = buttonCategory[position].text.toString()
 
         newsUrl =
-            "https://gnews.io/api/v4/top-headlines?lang=en&country=in&topic=$newsCategory&token=ef098601144aaa99d14f8cd6d85eb7d8"
+            "https://gnews.io/api/v4/top-headlines?lang=$lang&country=in&topic=$newsCategory&token=ef098601144aaa99d14f8cd6d85eb7d8"
 
         for (i in 0 until buttonCategory.size) {
             if (i == position)
@@ -109,6 +196,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         loadNews()
     }
 
+    // Load news using Volley
     private fun loadNews() {
 
         binding.progressBarAM.visibility = View.VISIBLE
@@ -152,6 +240,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
 
     }
 
+    // Handle news item clicks
     override fun onItemClicked(item: NewsData) {
 
         val url = item.newsUrl
