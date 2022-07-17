@@ -1,10 +1,12 @@
 package com.shashi.newsdozz
 
 import android.app.Dialog
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -15,11 +17,19 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
-
 
 class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener {
 
+    // Data binding
     private lateinit var binding: ActivityHomeBinding
 
     private var newsAdapter = NewsAdapter(this, this)
@@ -27,8 +37,16 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
     private var buttonCategory = ArrayList<Button>()
     private lateinit var newsCategory: String
 
+    // Shared prefs
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var lang: String
+
+    // Firebase Auth
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var gso: GoogleSignInOptions
+    private val TAG = "newsdozz"
+    private val RC_SIGN_IN = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,21 +71,23 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
     // Initialize buttons
     private fun initializeUiComponents() {
 
+        // Swipe refresh
         binding.swipeRefreshAM.setOnRefreshListener {
             loadNews()
             binding.swipeRefreshAM.isRefreshing = false
         }
 
+        // News recycler view
         binding.rvNewsAM.layoutManager = LinearLayoutManager(this)
         binding.rvNewsAM.adapter = newsAdapter
 
+        // News category buttons
         buttonCategory.add(binding.btnBreakingNews)
         buttonCategory.add(binding.btnBusiness)
         buttonCategory.add(binding.btnTechnology)
         buttonCategory.add(binding.btnSports)
         buttonCategory.add(binding.btnScience)
         buttonCategory.add(binding.btnHealth)
-
         for (i in buttonCategory)
             i.setOnClickListener(this)
 
@@ -81,10 +101,108 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         newsUrl =
             "https://gnews.io/api/v4/top-headlines?lang=$lang&country=in&topic=$newsCategory&token=ef098601144aaa99d14f8cd6d85eb7d8"
 
+        // Listener for Language Change
         binding.ivLanguage.setOnClickListener {
             changeLanguage()
         }
+
+        // Listener for Signing in/Bookmark
+        binding.ivBookmark.setOnClickListener {
+            signIn()
+        }
+//        binding.ivBookmark.setOnLongClickListener {
+//            signout()
+//            true
+//        }
+
+        auth = FirebaseAuth.getInstance()
+        firebaseAuthHelper()
     }
+
+    private fun firebaseAuthHelper() {
+
+        val user = auth.currentUser
+        gso = GoogleSignInOptions
+            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        if (user != null) {
+            binding.ivBookmark.setImageResource(R.drawable.icon_bookmark)
+        } else {
+            binding.ivBookmark.setImageResource(R.drawable.icon_login)
+        }
+    }
+
+    // Start sign-in
+    private fun signIn() {
+        val user = auth.currentUser
+        if (user != null) {
+            // TODO: Open Bookmarks  
+        } else {
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+
+            } catch (e: Exception) {
+
+            }
+
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+
+        val auth = FirebaseAuth.getInstance()
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+
+                    val user = auth.currentUser
+
+                    Log.d(TAG, "firebaseAuthWithGoogle: Sign in successful")
+                    Log.d(TAG, "firebaseAuthWithGoogle: ${user?.email} : ${user?.displayName}")
+
+                    binding.ivBookmark.setImageResource(R.drawable.icon_bookmark)
+
+                } else {
+
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+
+                    binding.ivBookmark.setImageResource(R.drawable.icon_login)
+
+                }
+            }
+    }
+
+//    private fun signout() {
+//        val user = auth.currentUser
+//
+//        if (user != null) {
+//
+//            Firebase.auth.signOut()
+//            binding.ivBookmark.setImageResource(R.drawable.icon_login)
+//
+//        } else {
+//            Toast.makeText(this, "No login found", Toast.LENGTH_SHORT).show()
+//            binding.ivBookmark.setImageResource(R.drawable.icon_bookmark)
+//        }
+//    }
 
     // Get language from Shared pref
     private fun getLanguage() {
@@ -260,7 +378,6 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         customTabsIntent.launchUrl(this, Uri.parse(url))
 
     }
-
 
 }
 
