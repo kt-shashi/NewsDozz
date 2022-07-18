@@ -15,7 +15,9 @@ import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -25,6 +27,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
 
@@ -33,6 +36,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
     // Data binding
     private lateinit var binding: ActivityHomeBinding
 
+    var newsList = ArrayList<NewsData>()
     private var newsAdapter = NewsAdapter(this, this)
     private var newsUrl: String = Constants.NEWS_API
     private var buttonCategory = ArrayList<Button>()
@@ -48,6 +52,9 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
     private lateinit var gso: GoogleSignInOptions
     private val TAG = "newsdozz"
     private val RC_SIGN_IN = 100
+
+    // FIrebase Firestore
+    val firestore = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,14 +119,78 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
             signIn()
         }
         binding.ivBookmark.setOnLongClickListener {
-            signout()
+            signOut()
             true
         }
 
+        // Setup login
         auth = FirebaseAuth.getInstance()
         firebaseAuthHelper()
+
+        // Swipe to add to bookmark feature
+        val itemTouchHelperCallback =
+            object :
+                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+
+                    if (isSignedIn()) {
+
+                        var news = newsList.removeAt(viewHolder.adapterPosition)
+                        addNewsToBookmark(news)
+
+                    } else {
+                        showToast("You must be logged-in to use this feature.")
+                    }
+
+                    newsAdapter.notifyDataSetChanged()
+
+                }
+
+            }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.rvNewsAM)
+
     }
 
+    // Add data to Bookmark (Cloud firestore)
+    private fun addNewsToBookmark(news: NewsData) {
+
+        if (isSignedIn()) {
+            var email = auth.currentUser?.email.toString()
+
+            firestore
+                .collection(email)
+                .add(news)
+                .addOnSuccessListener {
+                    showToast("Added to Bookmark")
+                }
+                .addOnFailureListener {
+                    showToast("Error adding to Bookmark")
+                }
+        }
+
+    }
+
+    // Check if user is signed in
+    fun isSignedIn(): Boolean {
+        val user = auth.currentUser
+        if (user != null)
+            return true
+        return false
+    }
+
+    // Google Sign in helper
     private fun firebaseAuthHelper() {
 
         val user = auth.currentUser
@@ -139,8 +210,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
 
     // Start sign-in
     private fun signIn() {
-        val user = auth.currentUser
-        if (user != null) {
+        if (isSignedIn()) {
             // TODO: Open Bookmarks  
         } else {
             val signInIntent = googleSignInClient.signInIntent
@@ -161,6 +231,8 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
 
             } catch (e: Exception) {
 
+                showToast("Error while signing in! Please try again")
+
             }
 
         }
@@ -174,7 +246,6 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
 
-                    val user = auth.currentUser
                     showToast("Long press bookmark button to logout")
                     binding.ivBookmark.setImageResource(R.drawable.icon_bookmark)
 
@@ -191,10 +262,9 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun signout() {
-        val user = auth.currentUser
+    private fun signOut() {
 
-        if (user != null) {
+        if (isSignedIn()) {
 
             // Creating dialog
             var builder = AlertDialog.Builder(this)
@@ -357,7 +427,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
 
                 // Get url of image
                 var articleResponse = response.getJSONArray("articles")
-                var articleNews = ArrayList<NewsData>()
+                newsList.clear()
 
                 for (i in 0 until articleResponse.length()) {
 
@@ -370,11 +440,11 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
                         newsJsonObject.getString("url")
                     )
 
-                    articleNews.add(news)
+                    newsList.add(news)
 
                 }
 
-                newsAdapter.updateNewsList(articleNews)
+                newsAdapter.updateNewsList(newsList)
                 binding.rvNewsAM.adapter?.notifyDataSetChanged()
                 binding.progressBarAM.visibility = View.GONE
 
