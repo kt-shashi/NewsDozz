@@ -24,6 +24,7 @@ class NewsAdapter(
 
         var viewHolder = NewsViewHolder(view)
 
+        // Event handling for each news item click
         view.setOnClickListener {
             listner.onItemClicked(newsList.get(viewHolder.adapterPosition))
         }

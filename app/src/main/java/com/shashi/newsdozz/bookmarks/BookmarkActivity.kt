@@ -2,27 +2,25 @@ package com.shashi.newsdozz.bookmarks
 
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shashi.newsdozz.HomeActivity
 import com.shashi.newsdozz.NewsAdapter
 import com.shashi.newsdozz.NewsItemClicked
-import com.shashi.newsdozz.R
 import com.shashi.newsdozz.databinding.ActivityBookmarkBinding
 import com.shashi.newsdozz.model.NewsData
 
 class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
 
+    // Data binding
     private lateinit var binding: ActivityBookmarkBinding
 
     var newsList = ArrayList<NewsData>()
@@ -32,7 +30,7 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
     private lateinit var auth: FirebaseAuth
     private val TAG = "newsdozz"
 
-    // FIrebase Firestore
+    // Firebase Firestore
     val firestore = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,9 +53,8 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
 
     private fun initializeUi() {
 
+        // Check if user is signed in
         auth = FirebaseAuth.getInstance()
-        checkSignedIn()
-
         checkSignedIn()
 
         // Swipe refresh
@@ -71,8 +68,8 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
         binding.rvBookmark.adapter = newsAdapter
     }
 
+    // Fetach news from Firestore
     private fun loadNews() {
-
         binding.progressBarAB.visibility = View.VISIBLE
         val user = auth.currentUser?.email.toString()
 
@@ -91,7 +88,6 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
 
                 // Show data to recycler view
                 newsAdapter.updateNewsList(newsList)
-
                 newsAdapter.notifyDataSetChanged()
                 binding.progressBarAB.visibility = View.GONE
             }
@@ -101,12 +97,14 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
 
     }
 
+    // Check if user is signed in
     private fun checkSignedIn() {
         val user = auth.currentUser
         if (user == null)
             startActivity(Intent(this, HomeActivity::class.java))
     }
 
+    // Open full news
     override fun onItemClicked(item: NewsData) {
 
         val url = item.newsUrl
@@ -115,7 +113,6 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
         customTabsIntent.launchUrl(this, Uri.parse(url))
 
     }
-
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
