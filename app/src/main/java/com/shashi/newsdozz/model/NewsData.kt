@@ -1,6 +1,4 @@
-package com.shashi.newsdozz
-
-import android.net.Uri
+package com.shashi.newsdozz.model
 
 data class NewsData(
     var title: String = "",

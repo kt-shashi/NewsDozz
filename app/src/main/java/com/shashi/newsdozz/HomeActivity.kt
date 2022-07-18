@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -29,6 +28,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.shashi.newsdozz.bookmarks.BookmarkActivity
+import com.shashi.newsdozz.model.NewsData
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener {
@@ -142,7 +143,6 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
-
                     if (isSignedIn()) {
 
                         var news = newsList.removeAt(viewHolder.adapterPosition)
@@ -211,8 +211,10 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
     // Start sign-in
     private fun signIn() {
         if (isSignedIn()) {
-            // TODO: Open Bookmarks  
+            // Start Bookmark Activity
+            startActivity(Intent(this, BookmarkActivity::class.java))
         } else {
+            // Initiate google signin
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }

@@ -16,7 +16,7 @@
         android:theme="@style/Theme.NewsDozz"
         tools:targetApi="31">
         <activity
-            android:name=".SplashScreen"
+            android:name=".login.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,10 @@
         </activity>
         <activity
             android:name=".HomeActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
+        <activity
+            android:name=".bookmarks.BookmarkActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

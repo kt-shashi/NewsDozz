@@ -1,4 +1,4 @@
-package com.shashi.newsdozz
+package com.shashi.newsdozz.login
 
 import android.content.Intent
 import android.os.Build
@@ -9,6 +9,8 @@ import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
+import com.shashi.newsdozz.HomeActivity
+import com.shashi.newsdozz.R
 
 class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
