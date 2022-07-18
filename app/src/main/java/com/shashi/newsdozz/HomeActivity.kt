@@ -1,5 +1,6 @@
 package com.shashi.newsdozz
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.content.SharedPreferences
@@ -110,10 +111,10 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         binding.ivBookmark.setOnClickListener {
             signIn()
         }
-//        binding.ivBookmark.setOnLongClickListener {
-//            signout()
-//            true
-//        }
+        binding.ivBookmark.setOnLongClickListener {
+            signout()
+            true
+        }
 
         auth = FirebaseAuth.getInstance()
         firebaseAuthHelper()
@@ -174,35 +175,53 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
                 if (task.isSuccessful) {
 
                     val user = auth.currentUser
-
-                    Log.d(TAG, "firebaseAuthWithGoogle: Sign in successful")
-                    Log.d(TAG, "firebaseAuthWithGoogle: ${user?.email} : ${user?.displayName}")
-
+                    showToast("Long press bookmark button to logout")
                     binding.ivBookmark.setImageResource(R.drawable.icon_bookmark)
 
                 } else {
 
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
-
+                    showToast("Something went wrong while signing in!")
                     binding.ivBookmark.setImageResource(R.drawable.icon_login)
 
                 }
             }
     }
 
-//    private fun signout() {
-//        val user = auth.currentUser
-//
-//        if (user != null) {
-//
-//            Firebase.auth.signOut()
-//            binding.ivBookmark.setImageResource(R.drawable.icon_login)
-//
-//        } else {
-//            Toast.makeText(this, "No login found", Toast.LENGTH_SHORT).show()
-//            binding.ivBookmark.setImageResource(R.drawable.icon_bookmark)
-//        }
-//    }
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun signout() {
+        val user = auth.currentUser
+
+        if (user != null) {
+
+            // Creating dialog
+            var builder = AlertDialog.Builder(this)
+            //set title for alert dialog
+            builder.setTitle("Confirm Logout")
+            builder.setMessage("Are you sure you want to logout?")
+            builder.setIcon(R.drawable.icon_logout)
+
+            builder.setPositiveButton("Yes") { dialogInterface, which ->
+
+                // Logout
+                Firebase.auth.signOut()
+                binding.ivBookmark.setImageResource(R.drawable.icon_login)
+                dialogInterface.dismiss()
+
+            }
+            builder.setNegativeButton("No") { dialogInterface, which ->
+                dialogInterface.dismiss()
+            }
+
+            val alertDialog: AlertDialog = builder.create()
+            // Set other dialog properties
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+
+        }
+    }
 
     // Get language from Shared pref
     private fun getLanguage() {
@@ -361,7 +380,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
 
             },
             { error ->
-                Toast.makeText(this, "Oops.. Something went wrong!", Toast.LENGTH_SHORT).show()
+                showToast("Something went wrong while fetching news!")
             }
         )
 
