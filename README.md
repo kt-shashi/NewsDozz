@@ -10,7 +10,7 @@ Get your daily dose of NEWS here!
 ## Features⚡️
 
 * Free News articles
-* Breaking News in 4 lines
+* Breaking News in 1 line
 * Sign-in to bookmark your favourite News
 * Multiple categories to choose from
 * Multiple language support
