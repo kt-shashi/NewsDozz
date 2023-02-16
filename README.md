@@ -21,7 +21,7 @@ Get your daily dose of NEWS here!
 
 <br>
 
-Download .apk - [**Click here**](https://github.com/kt-shashi/NewsDozz/blob/main/app/debug/NewsDozz.apk)
+Download .apk: [**Click here**](https://github.com/kt-shashi/NewsDozz/blob/main/app/debug/NewsDozz.apk)
 
 </div>
 <div align="left">
