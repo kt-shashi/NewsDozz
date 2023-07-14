@@ -8,8 +8,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shashi.newsdozz.HomeActivity
@@ -31,7 +33,7 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
     private val TAG = "newsdozz"
 
     // Firebase Firestore
-    val firestore = Firebase.firestore
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,9 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
         } catch (e: NullPointerException) {
 
         }
+
+        FirebaseApp.initializeApp(this)
+        firestore=Firebase.firestore
 
         binding = ActivityBookmarkBinding.inflate(layoutInflater)
         setContentView(binding.root)

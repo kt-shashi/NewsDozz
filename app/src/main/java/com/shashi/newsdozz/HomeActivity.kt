@@ -23,14 +23,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shashi.newsdozz.bookmarks.BookmarkActivity
-import com.shashi.newsdozz.databinding.ActivityHomeBinding
 import com.shashi.newsdozz.model.NewsData
+import com.shashi.newsdozz.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener {
 
@@ -55,7 +57,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
     private val RC_SIGN_IN = 100
 
     // FIrebase Firestore
-    val firestore = Firebase.firestore
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,9 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         } catch (e: NullPointerException) {
 
         }
+
+        FirebaseApp.initializeApp(this)
+        firestore = Firebase.firestore
 
         // Data binding
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -142,18 +147,15 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
                     if (isSignedIn()) {
-
-                        var news = newsList.removeAt(viewHolder.adapterPosition)
+                        val adapterPosition = viewHolder.adapterPosition
+                        val news = newsList[adapterPosition]
                         addNewsToBookmark(news)
-
                     } else {
                         showToast("You must be logged-in to use this feature.")
                     }
 
                     newsAdapter.notifyDataSetChanged()
-
                 }
 
             }
