@@ -12,7 +12,6 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
@@ -76,7 +75,7 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
         binding.rvBookmark.adapter = newsAdapter
     }
 
-    // Fetach news from Firestore
+    // Fetch news from Firestore
     private fun loadNews() {
         binding.progressBarAB.visibility = View.VISIBLE
         val user = auth.currentUser?.email.toString()
@@ -90,8 +89,6 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
                 for (document in querySnapshot.documents) {
                     if (document.exists()) {
                         val data = document.toObject(BookmarkData::class.java)
-
-                        Log.d(TAG, "loadNews: ${data?.timestamp}")
 
                         val newsData = NewsData().apply {
                             desc = data?.desc ?: ""

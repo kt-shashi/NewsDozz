@@ -41,7 +41,6 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-
         <ProgressBar
             android:id="@+id/progressBarAB"
             style="?android:attr/progressBarStyleHorizontal"
@@ -50,6 +49,18 @@
             android:layout_marginTop="5dp"
             android:indeterminate="true"
             android:progressDrawable="@drawable/progress_bar_background"
+            app:layout_constraintBottom_toTopOf="@id/tvFooterAB"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvFooterAB"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:fontFamily="@font/montserrat"
+            android:text="Developed by: SHASHI KANT"
+            android:textColor="@color/yellow_custom"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

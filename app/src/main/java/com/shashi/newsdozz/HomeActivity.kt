@@ -24,16 +24,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseApp
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.type.Date
 import com.shashi.newsdozz.bookmarks.BookmarkActivity
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
 import com.shashi.newsdozz.model.NewsData
@@ -113,6 +112,11 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         newsCategory = "breaking-news"
         binding.btnBreakingNews.setBackgroundResource(R.drawable.category_button_selected_design)
         binding.btnBreakingNews.setTextColor(Color.parseColor("#000000"))
+
+        binding.tvHeadingAM.setOnClickListener {
+            Toast.makeText(this, "For queries reach out to: shkt@gmail.com", Toast.LENGTH_SHORT)
+                .show()
+        }
 
         sharedPreferences = getSharedPreferences(Constants.LANGUAGE_PREF, MODE_PRIVATE)
         getLanguage()
