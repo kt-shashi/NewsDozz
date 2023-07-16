@@ -1,8 +1,10 @@
 package com.shashi.newsdozz.bookmarks
 
+import BookmarkData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.shashi.newsdozz.HomeActivity
@@ -46,7 +49,7 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
         }
 
         FirebaseApp.initializeApp(this)
-        firestore=Firebase.firestore
+        firestore = Firebase.firestore
 
         binding = ActivityBookmarkBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -79,15 +82,25 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
         val user = auth.currentUser?.email.toString()
 
         firestore.collection(user)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .get()
-            .addOnSuccessListener {
-
+            .addOnSuccessListener { querySnapshot ->
                 newsList.clear()
 
-                for (document: DocumentSnapshot in it) {
+                for (document in querySnapshot.documents) {
                     if (document.exists()) {
-                        var data: NewsData? = document.toObject(NewsData::class.java)
-                        newsList.add(data!!)
+                        val data = document.toObject(BookmarkData::class.java)
+
+                        Log.d(TAG, "loadNews: ${data?.timestamp}")
+
+                        val newsData = NewsData().apply {
+                            desc = data?.desc ?: ""
+                            title = data?.title ?: ""
+                            imageUrl = data?.imageUrl ?: ""
+                            newsUrl = data?.newsUrl ?: ""
+                        }
+
+                        newsList.add(newsData)
                     }
                 }
 
@@ -95,11 +108,13 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
                 newsAdapter.updateNewsList(newsList)
                 newsAdapter.notifyDataSetChanged()
                 binding.progressBarAB.visibility = View.GONE
+
+                if (newsList.isEmpty())
+                    Toast.makeText(this, "No Bookmark Found", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 showToast("Error while fetching Bookmarks")
             }
-
     }
 
     // Check if user is signed in

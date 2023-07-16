@@ -1,5 +1,6 @@
 package com.shashi.newsdozz
 
+import BookmarkData
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
@@ -24,15 +25,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.FirebaseApp
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.type.Date
 import com.shashi.newsdozz.bookmarks.BookmarkActivity
-import com.shashi.newsdozz.model.NewsData
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
+import com.shashi.newsdozz.model.NewsData
 
 class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener {
 
@@ -168,12 +172,19 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
     // Add data to Bookmark (Cloud firestore)
     private fun addNewsToBookmark(news: NewsData) {
 
+        var bookmarkData = BookmarkData()
+        bookmarkData.desc = news.desc
+        bookmarkData.title = news.title
+        bookmarkData.imageUrl = news.imageUrl
+        bookmarkData.newsUrl = news.newsUrl
+        bookmarkData.timestamp = Timestamp.now()
+
         if (isSignedIn()) {
             var email = auth.currentUser?.email.toString()
 
             firestore
                 .collection(email)
-                .add(news)
+                .add(bookmarkData)
                 .addOnSuccessListener {
                     showToast("Added to Bookmark")
                 }
