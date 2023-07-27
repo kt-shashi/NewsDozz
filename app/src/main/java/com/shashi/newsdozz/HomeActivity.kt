@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -24,7 +25,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseApp
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -37,13 +37,13 @@ import com.shashi.newsdozz.bookmarks.BookmarkActivity
 import com.shashi.newsdozz.databinding.ActivityHomeBinding
 import com.shashi.newsdozz.model.NewsData
 
-class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener {
+class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener, NewsShareClicked {
 
     // Data binding
     private lateinit var binding: ActivityHomeBinding
 
     var newsList = ArrayList<NewsData>()
-    private var newsAdapter = NewsAdapter(this, this)
+    private var newsAdapter = NewsAdapter(this, this, this)
     private var newsUrl: String = Constants.NEWS_API
     private var buttonCategory = ArrayList<Button>()
     private lateinit var newsCategory: String
@@ -251,6 +251,7 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
             } catch (e: Exception) {
 
                 showToast("Error while signing in! Please try again")
+                Log.d("newsdozz", "onActivityResult: ${e.printStackTrace()}")
 
             }
 
@@ -484,6 +485,19 @@ class HomeActivity : AppCompatActivity(), NewsItemClicked, View.OnClickListener 
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(this, Uri.parse(url))
+
+    }
+
+    override fun onNewsClicked(item: NewsData) {
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(
+            Intent.EXTRA_TEXT,
+            "Hey, checkout this news article I read on NewsDozz\n ${item.newsUrl}"
+        )
+        val chooser = Intent.createChooser(intent, "Share this News")
+        startActivity(chooser)
 
     }
 

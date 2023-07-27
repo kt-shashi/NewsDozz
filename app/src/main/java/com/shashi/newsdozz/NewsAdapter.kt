@@ -12,7 +12,8 @@ import com.shashi.newsdozz.model.NewsData
 
 class NewsAdapter(
     var context: Context,
-    private val listner: NewsItemClicked
+    private val listner: NewsItemClicked,
+    private val listnerShare: NewsShareClicked
 ) :
     RecyclerView.Adapter<NewsViewHolder>() {
 
@@ -43,6 +44,10 @@ class NewsAdapter(
             .placeholder(R.drawable.icon_placeholder)
             .into(holder.ivNewsImage)
 
+        holder.ivShare.setOnClickListener {
+            listnerShare.onNewsClicked(newsList.get(position))
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -64,10 +69,16 @@ class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var ivNewsImage = itemView.findViewById<ImageView>(R.id.ivNewsIVN)
     var tvNewsTitle = itemView.findViewById<TextView>(R.id.tvNewsTitleIV)
     var tvNewsDesc = itemView.findViewById<TextView>(R.id.tvNewsDescIV)
+    var ivShare = itemView.findViewById<ImageView>(R.id.iv_share)
 
 }
 
 // Interface to handle News click
 interface NewsItemClicked {
     fun onItemClicked(item: NewsData)
+}
+
+// Interface to handle news share
+interface NewsShareClicked {
+    fun onNewsClicked(item: NewsData)
 }

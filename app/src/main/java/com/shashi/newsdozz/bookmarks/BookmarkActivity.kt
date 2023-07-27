@@ -4,7 +4,6 @@ import BookmarkData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,16 +18,17 @@ import com.google.firebase.ktx.Firebase
 import com.shashi.newsdozz.HomeActivity
 import com.shashi.newsdozz.NewsAdapter
 import com.shashi.newsdozz.NewsItemClicked
+import com.shashi.newsdozz.NewsShareClicked
 import com.shashi.newsdozz.databinding.ActivityBookmarkBinding
 import com.shashi.newsdozz.model.NewsData
 
-class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
+class BookmarkActivity : AppCompatActivity(), NewsItemClicked, NewsShareClicked {
 
     // Data binding
     private lateinit var binding: ActivityBookmarkBinding
 
     var newsList = ArrayList<NewsData>()
-    private var newsAdapter = NewsAdapter(this, this)
+    private var newsAdapter = NewsAdapter(this, this, this)
 
     // Firebase Auth
     private lateinit var auth: FirebaseAuth
@@ -135,5 +135,17 @@ class BookmarkActivity : AppCompatActivity(), NewsItemClicked {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun onNewsClicked(item: NewsData) {
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(
+            Intent.EXTRA_TEXT,
+            "Hey, checkout this news article I read on NewsDozz\n ${item.newsUrl}"
+        )
+        val chooser = Intent.createChooser(intent, "Share this News")
+        startActivity(chooser)
+
+    }
 
 }
