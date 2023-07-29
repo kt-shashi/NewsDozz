@@ -14,6 +14,7 @@ Get your daily dose of NEWS here!
 * Sign-in to bookmark your favourite News
 * Multiple categories to choose from
 * Multiple language support
+* Share news with friends
 
 
 </div>
