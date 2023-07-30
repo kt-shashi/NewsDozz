@@ -17,13 +17,17 @@ Get your daily dose of NEWS here!
 - Share news with friends
 
 </div>
+
 <div align="center">
+
+## Download apk 🔽
 
 <br>
 
-Download .apk: [**Click here**](https://github.com/kt-shashi/NewsDozz/blob/main/apk/Newsdozz.apk)
+[**Click here**](https://github.com/kt-shashi/NewsDozz/blob/main/apk/Newsdozz.apk)
 
 </div>
+
 <div align="left">
 
 ## Screenshots
