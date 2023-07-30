@@ -9,25 +9,25 @@ Get your daily dose of NEWS here!
 
 ## Features⚡️
 
-* Free News articles
-* Breaking News in 1 line
-* Sign-in to bookmark your favourite News
-* Multiple categories to choose from
-* Multiple language support
-* Share news with friends
-
+- Free News articles
+- Breaking News in 1 line
+- Sign-in to bookmark your favourite News
+- Multiple categories to choose from
+- Multiple language support
+- Share news with friends
 
 </div>
 <div align="center">
 
 <br>
 
-Download .apk: [**Click here**](https://github.com/kt-shashi/NewsDozz/blob/main/app/debug/NewsDozz.apk)
+Download .apk: [**Click here**](https://github.com/kt-shashi/NewsDozz/blob/main/apk/Newsdozz.apk)
 
 </div>
 <div align="left">
 
 ## Screenshots
+
 <br>
 
 <table>
@@ -41,7 +41,7 @@ Download .apk: [**Click here**](https://github.com/kt-shashi/NewsDozz/blob/main/
         <td><img src = "/screenshots/5.jpg" ></td>
         <td><img src = "/screenshots/6.jpg" ></td>
     </tr>
-</table>    
+</table>
 
 <br>
 
